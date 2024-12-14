@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Record</title>
+</head>
+<body>
+    <h1>Edit Tax Record</h1>
+
+    <form action="/edit/{{ record.id }}" method="POST">
+        <input type="text" name="company_name" value="{{ record.company_name }}" required>
+        <input type="number" name="amount" value="{{ record.amount }}" required>
+        <input type="date" name="payment_date" value="{{ record.payment_date }}" required>
+        <input type="text" name="status" value="{{ record.status }}" required>
+        <select name="due_date" required>
+            <option value="04/15/{{ current_year }}" {% if record.due_date == "04/15/{{ current_year }}" %}selected{% endif %}>April 15</option>
+            <option value="06/15/{{ current_year }}" {% if record.due_date == "06/15/{{ current_year }}" %}selected{% endif %}>June 15</option>
+            <option value="09/15/{{ current_year }}" {% if record.due_date == "09/15/{{ current_year }}" %}selected{% endif %}>September 15</option>
+            <option value="01/15/{{ next_year }}" {% if record.due_date == "01/15/{{ next_year }}" %}selected{% endif %}>January 15</option>
+        </select>
+        <button type="submit">Save Changes</button>
+    </form>
+
+</body>
+</html>

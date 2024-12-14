@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Payment Tracking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Tax and Payment Tracking System</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="company_name" placeholder="Company Name" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <input type="date" name="payment_date" required>
+        <input type="text" name="status" placeholder="Status (paid/unpaid)" required>
+        <select name="due_date" required>
+            <option value="04/15/{{ current_year }}">April 15</option>
+            <option value="06/15/{{ current_year }}">June 15</option>
+            <option value="09/15/{{ current_year }}">September 15</option>
+            <option value="01/15/{{ next_year }}">January 15</option>
+        </select>
+        <button type="submit">Save Record</button>
+    </form>
+
+    <h2>Records</h2>
+    <div>
+        <label for="due_date_filter">Filter by Due Date:</label>
+        <select id="due_date_filter" onchange="filterRecords()">
+            <option value="">All</option>
+            <option value="04/15/{{ current_year }}" {% if due_date_filter == "04/15/{{ current_year }}" %}selected{% endif %}>April 15</option>
+            <option value="06/15/{{ current_year }}" {% if due_date_filter == "06/15/{{ current_year }}" %}selected{% endif %}>June 15</option>
+            <option value="09/15/{{ current_year }}" {% if due_date_filter == "09/15/{{ current_year }}" %}selected{% endif %}>September 15</option>
+            <option value="01/15/{{ next_year }}" {% if due_date_filter == "01/15/{{ next_year }}" %}selected{% endif %}>January 15</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in tax_records %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.company_name }}</td>
+                <td>{{ record.amount }}</td>
+                <td>{{ record.payment_date }}</td>
+                <td>{{ record.status }}</td>
+                <td>{{ record.due_date }}</td>
+                <td>
+                    <a href="/edit/{{ record.id }}">Edit</a> | 
+                    <form action="/delete/{{ record.id }}" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <h3>Total Amount: ${{ total_amount }}</h3>
+        <h3>Tax Rate: 6%</h3>
+        <h3>Tax Due: ${{ tax_due }}</h3>
+    </div>
+
+    <script>
+        function filterRecords() {
+            const dueDate = document.getElementById('due_date_filter').value;
+            window.location.href = `/?due_date=${dueDate}`;
+        }
+    </script>
+</body>
+</html>
